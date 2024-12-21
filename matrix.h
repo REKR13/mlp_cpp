@@ -28,10 +28,73 @@ class Matrix {
         void print() const {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
-                    std::cout<<(*this)(i,j);
+                    std::cout<<(*this)(i,j)<< " ";
                 }
                 std::cout<<"\n";
             }
+            std::cout<<"\n";
         }
 
+        Matrix matmul(const Matrix& other) const {
+            if (cols != other.rows) {
+                throw std::invalid_argument("Inner dimensions do not match");
+            }
+            Matrix result(rows, other.cols);
+
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < other.cols; j++) {
+                    for (int k = 0; k < cols; k++) {
+                        result(i,j) += (*this)(i,k) * other(k,j);
+                    }
+                }
+            }
+            return result;
+        }
+
+        Matrix operator+(const Matrix& other) const {
+            if (rows != other.rows || cols != other.cols) {
+                throw std::invalid_argument("Matrix dimensions do not match");
+            }
+
+            Matrix result(rows, cols);
+
+            for (int i = 0; i<rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    result(i,j) = (*this)(i,j) + other(i,j);
+                }
+            }
+            return result;
+        }
+        Matrix operator-(const Matrix& other) const {
+            if (rows != other.rows || cols != other.cols) {
+                throw std::invalid_argument("Matrix dimensions do not match");
+            }
+
+            Matrix result(rows, cols);
+
+            for (int i = 0; i<rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    result(i,j) = (*this)(i,j) - other(i,j);
+                }
+            }
+            return result;
+        }
+
+        Matrix operator*(double c) const {
+            Matrix result(rows, cols);
+            for (int i = 0; i<rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    result(i,j) = (*this)(i,j) * c;
+                }
+            }
+            return result;
+        }
+
+        Matrix operator/(double c) const {
+            return (*this)*(1/c);
+        }
+
+        Matrix operator*(const Matrix& other) const {
+            return (*this).matmul(other);
+        }
 };
