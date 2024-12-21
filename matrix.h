@@ -35,6 +35,37 @@ class Matrix {
             std::cout<<"\n";
         }
 
+        void shape() const {
+            std::cout<<"("<<rows<<","<<cols<<")"<<"\n";
+        }
+
+        Matrix T() const {
+
+            Matrix result(cols, rows);
+
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    result(j,i) = (*this)(i,j);
+                }
+            }
+            return result;
+        }
+
+        Matrix reshape(int new_rows, int new_cols) const {
+            if (new_rows*new_cols != rows*cols) {
+                throw std::invalid_argument("Invalid shape");
+            }
+
+            Matrix result(new_rows, new_cols);
+
+            for (int i = 0; i < new_rows; i++) {
+                for (int j = 0; j < new_cols; j++) {
+                    result(i,j) = data[i+j];
+                }
+            }
+            return result;
+        }
+
         Matrix matmul(const Matrix& other) const {
             if (cols != other.rows) {
                 throw std::invalid_argument("Inner dimensions do not match");
