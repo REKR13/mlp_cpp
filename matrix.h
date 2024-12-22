@@ -1,3 +1,6 @@
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #include <vector>
 #include <stdexcept>
 #include <iostream>
@@ -139,3 +142,5 @@ class Matrix {
             return (*this).matmul(other);
         }
 };
+
+#endif
