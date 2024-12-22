@@ -84,6 +84,14 @@ class Matrix {
             return result;
         }
 
+        int get_cols() {
+            return cols;
+        }
+
+        int get_rows() {
+            return rows;
+        }
+
         Matrix operator+(const Matrix& other) const {
             if (rows != other.rows || cols != other.cols) {
                 throw std::invalid_argument("Matrix dimensions do not match");
