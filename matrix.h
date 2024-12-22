@@ -57,10 +57,12 @@ class Matrix {
             }
 
             Matrix result(new_rows, new_cols);
+            int count = 0;
 
             for (int i = 0; i < new_rows; i++) {
                 for (int j = 0; j < new_cols; j++) {
-                    result(i,j) = data[i+j];
+                    result(i,j) = data[count];
+                    count++;
                 }
             }
             return result;
