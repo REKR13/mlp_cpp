@@ -1,4 +1,5 @@
 #include "layer.h"
+#include "activation.h"
 #include <vector>
 
 class MLP {
@@ -17,5 +18,16 @@ class MLP {
                 output = layer.forward(output);
             }
             return output;
+        }
+
+        void set_activations(const std::vector<Activation>& activations) {
+            if (activations.size() != layers.size()) {
+                throw std::invalid_argument("Mismatch between activations and layers: " +
+                                std::to_string(activations.size()) + " vs " +
+                                std::to_string(layers.size()));
+            }
+            for (int i = 0; i < activations.size(); i++) {
+                layers[i].set_activation(activations[i]);
+            }
         }
 };
