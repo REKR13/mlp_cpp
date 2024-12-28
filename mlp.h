@@ -11,7 +11,7 @@ class MLP {
     public:
         MLP(const std::vector<int>& layer_sizes) {
             for (int i = 1; i < layer_sizes.size(); i++) {
-                layers.emplace_back(layer_sizes[i-1], layer_sizes[i]);
+                layers.emplace_back(layer_sizes[i-1], layer_sizes[i]); // creating N-1 neurons
             }
         }
 

@@ -14,7 +14,7 @@ class Layer {
         
     public:
         Layer(int input_size, int output_size)
-        : weights(output_size, input_size, 0.1), biases(input_size, 1, 0.0),
+        : weights(output_size, input_size, 0.1), biases(output_size, 1, 0.0),
         input_size(input_size), output_size(output_size) {}
 
         int get_input_size() const {return input_size;}
