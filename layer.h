@@ -4,6 +4,7 @@
 #include "matrix.h"
 #include "activation.h"
 #include <cmath>
+#include <stdexcept>
 
 class Layer {
     private:
@@ -30,7 +31,7 @@ class Layer {
             case Activation::NONE:
                 return "Activation: none";            
             default:
-                return "ACTIVATION: invalid";
+                throw std::invalid_argument("Invalid Activation");
             }
         }
 
@@ -40,39 +41,52 @@ class Layer {
             return applyActivation(z);
         }
 
-        
-
         void set_activation(Activation input) {
             activation = input;
         }
 
-    private:
+        Matrix activation_grad(Matrix& layer_output) {
+            return applyActivation(layer_output, true);
+        }
 
-        Matrix applyActivation(Matrix& z) {
+    private:
+        Matrix applyActivation(Matrix& z, bool grad = false) {
             for (int i = 0; i < z.get_rows(); i++) {
                 for (int j = 0; j < z.get_cols(); j++) {
-                    z(i,j) = activator(z(i,j));
+                    z(i,j) = activator(z(i,j), grad);
                 }
             }
             return z;
         }
 
-        double activator(double& x) {
+        double activator(double& x, bool grad) {
             if (activation == Activation::RELU) {
-                x = relu(x);
+                if (grad == false) {x=relu(x);}
+                else {x=relu_grad(x);}
             }
             else if (activation == Activation::SIGMOID) {
-                x = sigmoid(x);
+                if (grad == false) {x=sigmoid(x);}
+                else {x=sigmoid_grad(x);}
             }
             return x;
         }
+
+        //need to make this modular with classes
 
         double relu(double& x) {
             return std::max(0.0,x);
         }
 
+        double relu_grad(double& x) {
+            return x > 0 ? 1 : 0;
+        }
+
         double sigmoid(double& x) {
             return 1.0/(1.0+std::exp(-x));
+        }
+
+        double sigmoid_grad(double& x) {
+            return sigmoid(x)*(1.0-sigmoid(x));
         }
 };
 

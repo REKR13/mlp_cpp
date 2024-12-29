@@ -3,11 +3,16 @@
 
 #include "layer.h"
 #include "activation.h"
+#include <memory>
+#include <stdexcept>
 #include <vector>
+#include "loss.h"
 
 class MLP {
     private:
         std::vector<Layer> layers;
+        std::vector<Matrix> layer_outputs;
+        std::unique_ptr<Loss> loss_function;
     public:
         MLP(const std::vector<int>& layer_sizes) {
             for (int i = 1; i < layer_sizes.size(); i++) {
@@ -15,12 +20,24 @@ class MLP {
             }
         }
 
-        Matrix forward(const Matrix& input) {
+        void forward(const Matrix& input) {
             Matrix output = input;
             for (auto& layer : layers) {
                 output = layer.forward(output);
+                layer_outputs.push_back(output);
             }
-            return output;
+            //return output;
+        }
+
+        void backward() {
+            if (layer_outputs.size() == 0) {
+                throw std::invalid_argument("forward likely not complete, no layer outputs stored");
+            }
+            std::vector<Matrix> layer_gradients(layers.size());
+            //TODO:Replace TARGET with actual target which needs to be implemented
+            Matrix TARGET = Matrix(5,1,0);
+            layer_gradients[layers.size()-1] = layers[layers.size()-1].activation_grad(layer_outputs(layers.size()-1)) * 
+                                                loss_function.gradient(layer_outputs[layers.size()-1], TARGET);
         }
 
         Activation string_to_activation(const std::string& input) {
@@ -30,7 +47,6 @@ class MLP {
             if (input == "" || input == "none") return Activation::NONE;
             throw std::invalid_argument("Invalid activation function: " + input);
         }
-
 
         void set_activations(const std::vector<std::string>& activations) {
             if (activations.size() != layers.size()) {
@@ -47,6 +63,11 @@ class MLP {
         std::vector<Layer> get_layers() {
             return layers;
         }
+
+        void set_loss(std::unique_ptr<Loss> loss) {
+            loss_function = std::move(loss); //have to use set_loss(std::make_unique<MSE>())
+        }
+
 };
 
 #endif
