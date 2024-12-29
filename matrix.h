@@ -95,6 +95,13 @@ class Matrix {
             return rows;
         }
 
+        double get_single_value() {
+            if (data.size() != 1) {
+                throw std::invalid_argument("Not a 1x1 matrix");
+            }
+            return data[0];
+        }
+
         Matrix operator+(const Matrix& other) const {
             if (rows != other.rows || cols != other.cols) {
                 throw std::invalid_argument("Matrix dimensions do not match");
