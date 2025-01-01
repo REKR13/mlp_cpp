@@ -9,8 +9,11 @@ class Matrix {
     private:
         int rows, cols;
         std::vector<double> data;
-    
+
     public:
+
+        Matrix() : rows(0), cols(0), data(0) {}
+
         Matrix(int rows, int cols, double init_value = 0) 
         : rows(rows), cols(cols), data(rows * cols, init_value) {}
 

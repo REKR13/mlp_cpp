@@ -20,6 +20,7 @@ class Layer {
 
         int get_input_size() const {return input_size;}
         int get_output_size() const {return output_size;}
+        Matrix get_weights() const {return weights;}
 
         std::string get_activation() const {
             switch (activation)
@@ -41,8 +42,12 @@ class Layer {
             return applyActivation(z);
         }
 
-        void set_activation(Activation input) {
+        void set_activation(const Activation& input) {
             activation = input;
+        }
+
+        void set_weights(const Matrix& input) {
+            weights = input;
         }
 
         Matrix activation_grad(Matrix& layer_output) {
