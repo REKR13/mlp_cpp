@@ -6,8 +6,6 @@
 
 int main() {
     std::cout << "Hello World" << std::endl;
-
-
     /*
     std::vector<int> layer_sizes = {1,3,3,1};
     std::vector<std::string> activations = {"relu","relu","sigmoid"};

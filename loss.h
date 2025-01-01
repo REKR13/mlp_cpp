@@ -6,22 +6,22 @@
 
 class Loss {
     public:
-        virtual double compute(Matrix& predicted, Matrix& target) const = 0;
-        virtual Matrix gradient(Matrix& predicted, Matrix& target) const = 0;
-        virtual ~Loss() = default;
+    virtual double compute(Matrix& predicted, Matrix& target) const = 0;
+    virtual Matrix gradient(Matrix& predicted, Matrix& target) const = 0;
+    virtual ~Loss() = default;
 };
 
 class MeanSquaredError : public Loss {
     public:
-        double compute(Matrix& predicted, Matrix& target) {
-            // can use the matrix form (1/n)e^Te
-            Matrix e = predicted - target;
-            return ((e.T() * e) / e.get_rows()).get_single_value();
-        }
-        Matrix gradient(Matrix& predicted, Matrix& target) {
-            Matrix e = predicted - target;
-            return (e*2.0/e.get_rows());
+    double compute(Matrix& predicted, Matrix& target) {
+        // can use the matrix form (1/n)e^Te
+        Matrix e = predicted - target;
+        return ((e.T() * e) / e.get_rows()).get_single_value();
     }
+    Matrix gradient(Matrix& predicted, Matrix& target) {
+        Matrix e = predicted - target;
+        return (e*2.0/e.get_rows());
+}
 };
 /*
 class CrossEntropyLoss : public Loss {
