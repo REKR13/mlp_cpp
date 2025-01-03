@@ -88,6 +88,20 @@ class Matrix {
         }
         return result;
     }
+    //there is a way to optimize this from using data or not creating a new matrix
+    Matrix hadamard_product(const Matrix& other) const {
+        if (cols != other.cols || rows != other.rows) {
+            throw std::invalid_argument("Matrix dimensions must match");
+        }
+        Matrix result(rows, cols);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result(i,j) = (*this)(i,j) + other(i,j);
+            }
+        }
+        return result;
+    }
 
     int get_cols() {
         return cols;
@@ -106,7 +120,7 @@ class Matrix {
 
     Matrix operator+(const Matrix& other) const {
         if (rows != other.rows || cols != other.cols) {
-            throw std::invalid_argument("Matrix dimensions do not match");
+            throw std::invalid_argument("Matrix dimensions do not match for addition");
         }
 
         Matrix result(rows, cols);
@@ -120,7 +134,7 @@ class Matrix {
     }
     Matrix operator-(const Matrix& other) const {
         if (rows != other.rows || cols != other.cols) {
-            throw std::invalid_argument("Matrix dimensions do not match");
+            throw std::invalid_argument("Matrix dimensions do not match for subtraction");
         }
 
         Matrix result(rows, cols);

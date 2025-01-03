@@ -15,12 +15,13 @@ class Layer {
 
     public:
     Layer(int input_size, int output_size)
-    : weights(output_size, input_size, 0.1), biases(output_size, 1, 0.0),
+    : weights(output_size, input_size, 0.01), biases(output_size, 1, 0.01),
     input_size(input_size), output_size(output_size) {}
 
     int get_input_size() const {return input_size;}
     int get_output_size() const {return output_size;}
     Matrix get_weights() const {return weights;}
+    Matrix get_biases() const {return biases;}
 
     std::string get_activation() const {
         switch (activation)
@@ -50,8 +51,16 @@ class Layer {
         weights = input;
     }
 
+    void set_biases(const Matrix& input) {
+        biases = input;
+    }
+
     Matrix activation_grad(Matrix& layer_output) {
         return applyActivation(layer_output, true);
+    }
+
+    Matrix apply_layer_activation(Matrix& layer_output) {
+        return applyActivation(layer_output);
     }
 
 private:

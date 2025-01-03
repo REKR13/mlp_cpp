@@ -12,7 +12,7 @@
 class MLP {
     private:
     std::vector<Layer> layers;
-    std::vector<Matrix> layer_outputs;
+    std::vector<Matrix> layer_outputs; // 1 longer than layers because it includes original input
     std::unique_ptr<Loss> loss_function;
     double learning_rate;
     Matrix target;
@@ -24,13 +24,22 @@ class MLP {
         }
     }
 
-    void forward(const Matrix& input) {
+    Matrix predict(const Matrix& input) {
         Matrix output = input;
+        for (auto& layer : layers) {
+            output = layer.forward(output);
+        }
+        return output;
+    }
+
+    Matrix forward(const Matrix& input) {
+        Matrix output = input;
+        layer_outputs.push_back(output);
         for (auto& layer : layers) {
             output = layer.forward(output);
             layer_outputs.push_back(output);
         }
-        //return output;
+        return output;
     }
 
     void backward() {
@@ -40,19 +49,52 @@ class MLP {
         std::vector<Matrix> layer_gradients(layers.size());
         
         // get gradient for the last layer
-        layer_gradients[layers.size()-1] = layers[layers.size()-1].activation_grad(layer_outputs[layers.size()-1]) *
-                                            loss_function->gradient(layer_outputs[layers.size()-1], target);
+        /*
+        std::cout << "Layer gradient shape: " << "\n"; 
+        layers[layers.size()-1].activation_grad(layer_outputs[layers.size()]).shape();
+        std::cout << "Loss grad shape: " << "\n"; 
+        loss_function->gradient(layer_outputs[layers.size()], target).shape();
+        */
+
+        layer_gradients[layers.size()-1] = (layers[layers.size()-1].activation_grad(layer_outputs[layers.size()]))
+                                            .hadamard_product(loss_function->gradient(layer_outputs[layers.size()], target));
+        //std::cout << "Layer " << layers.size() << " grad complete" << "\n";
         // use gradient from last layer to move backwards getting the gradient for each layer
         for (int i = layers.size()-2; i >= 0; i--) {
-            layer_gradients[i] = layers[i+1].get_weights().T()*layer_gradients[i+1]*layers[i].activation_grad(layer_outputs[i]);
+            /*
+            std::cout << "Weights shape: " << "\n"; 
+            layers[i+1].get_weights().T().shape();
+            std::cout << "Layer gradient shape: " << "\n"; 
+            layer_gradients[i+1].shape();
+            std::cout << "Activation grad shape: " << "\n"; 
+            layers[i].activation_grad(layer_outputs[i+1]).shape();
+            */
+
+            layer_gradients[i] = (layers[i+1].get_weights().T()*layer_gradients[i+1]).hadamard_product(layers[i].activation_grad(layer_outputs[i+1]));
+            //std::cout << "Layer " << i+1 << " grad complete" << "\n";
+
         }
         //update weights with SGD
         //TODO: make the optimizer a class like for loss so Adam and other optimizers can be implemented 
         for (int i = 0; i < layers.size(); i++) {
-            // W_new = W_old - lr*layer_grad
-            Matrix new_weights = layers[i].get_weights() - layer_gradients[i] * learning_rate;
+            // W_new = W_old - lr*weight_grad
+            
+            Matrix activation_prev = layer_outputs[i]; // not necessary with current output implementation
+
+            Matrix new_weights = layers[i].get_weights() - (layer_gradients[i]*activation_prev.T()) * learning_rate;
             layers[i].set_weights(new_weights);
+            Matrix new_biases = layers[i].get_biases() - layer_gradients[i]*learning_rate;
+            layers[i].set_biases(new_biases);
+            //std::cout<<"Layer " << i+1 << " weights and biases updated" << "\n";
         }
+
+        // reset layer_outputs for next forward pass
+        layer_outputs.clear();
+
+    }
+
+    double compute_loss(const Matrix& output, const Matrix& target) {
+        return loss_function->compute(output, target);
     }
 
     Activation string_to_activation(const std::string& input) {
@@ -77,6 +119,10 @@ class MLP {
 
     std::vector<Layer> get_layers() {
         return layers;
+    }
+    
+    std::vector<Matrix> get_layer_outputs() {
+        return layer_outputs;
     }
 
     void set_target(const Matrix& input) {
