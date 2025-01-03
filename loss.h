@@ -23,18 +23,17 @@ class MeanSquaredError : public Loss {
         return e*(2.0/e.get_rows());
     }
 };
-/*
-class CrossEntropyLoss : public Loss {
+
+class BinaryCrossEntropyLoss : public Loss {
     public:
-        double compute(Matrix& predicted, Matrix& actual) {
-            // can use the matrix form (1/n)e^Te
-            Matrix e = predicted - actual;
-            return ((e.T() * e) / e.get_rows()).get_single_value();
-        }
-        Matrix gradient(Matrix& predicted, Matrix& actual) {
-            Matrix e = predicted - actual;
-            return (e*2.0/e.get_rows());
+    double compute(Matrix& predicted, Matrix& actual) {
+        
+    }
+    Matrix gradient(Matrix& predicted, Matrix& actual) {
+        Matrix e = predicted - actual;
+        return (e*2.0/e.get_rows());
+    }
 };
-*/
+
 
 #endif

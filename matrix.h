@@ -30,6 +30,14 @@ class Matrix {
         return data[row*cols + col];
     }
 
+    Matrix& array_set(std::vector<double> array) {
+        if (array.size() != data.size()) {
+            throw std::invalid_argument("Input must have entries for each position in the matrix");
+        }
+        data = array;
+        return *this;
+    }
+
     void print() const {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
