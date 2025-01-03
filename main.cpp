@@ -1,11 +1,26 @@
 #include <iostream>
+#include <memory>
+#include <string>
+#include <utility>
 #include <vector>
+#include "loss.h"
 #include "matrix.h"
 #include "layer.h"
 #include "mlp.h"
 
 int main() {
     std::cout << "Hello World" << std::endl;
+
+    std::vector<int> layer_sizes = {1,3,3,1};
+    std::vector<std::string> activations = {"relu","relu","relu"};
+    std::unique_ptr<Loss> mse = std::make_unique<MeanSquaredError>();
+    MLP mlp(layer_sizes, std::move(mse));
+
+
+
+
+
+    
     /*
     std::vector<int> layer_sizes = {1,3,3,1};
     std::vector<std::string> activations = {"relu","relu","sigmoid"};

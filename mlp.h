@@ -18,9 +18,7 @@ class MLP {
     Matrix target;
 
     public:
-    explicit MLP(std::unique_ptr<Loss> loss_function) : loss_function(std::move(loss_function)) {}
-
-    MLP(const std::vector<int>& layer_sizes, double lr = 0.01) : learning_rate(lr) {
+    explicit MLP(const std::vector<int>& layer_sizes, std::unique_ptr<Loss> loss_function, double lr = 0.01) : loss_function(std::move(loss_function)), learning_rate(lr) {
         for (int i = 1; i < layer_sizes.size(); i++) {
             layers.emplace_back(layer_sizes[i-1], layer_sizes[i]); // creating N-1 neurons
         }
@@ -48,7 +46,8 @@ class MLP {
         for (int i = layers.size()-2; i >= 0; i--) {
             layer_gradients[i] = layers[i+1].get_weights().T()*layer_gradients[i+1]*layers[i].activation_grad(layer_outputs[i]);
         }
-        //update weights
+        //update weights with SGD
+        //TODO: make the optimizer a class like for loss so Adam and other optimizers can be implemented 
         for (int i = 0; i < layers.size(); i++) {
             // W_new = W_old - lr*layer_grad
             Matrix new_weights = layers[i].get_weights() - layer_gradients[i] * learning_rate;
@@ -78,10 +77,6 @@ class MLP {
 
     std::vector<Layer> get_layers() {
         return layers;
-    }
-    // this might be deprecated
-    void set_loss(std::unique_ptr<Loss> loss) {
-        loss_function = std::move(loss); //have to use set_loss(std::make_unique<MSE>())
     }
 
     void set_target(const Matrix& input) {
