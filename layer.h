@@ -31,7 +31,7 @@ class Layer {
         case Activation::SIGMOID:
             return "Activation: sigmoid"; 
         case Activation::NONE:
-            return "Activation: none";            
+            return "Activation: none";
         default:
             throw std::invalid_argument("Invalid Activation");
         }

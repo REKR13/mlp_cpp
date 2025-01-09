@@ -19,7 +19,7 @@ int main() {
     int epochs = 100000;
 
     std::vector<int> layer_sizes = {1,3,3,1};
-    std::vector<std::string> activations = {"relu","relu","relu"};
+    std::vector<std::string> activations = {"none","none","none"};
     std::unique_ptr<Loss> mse = std::make_unique<MeanSquaredError>();
     MLP model(layer_sizes, std::move(mse), learning_rate);
 

@@ -111,6 +111,8 @@ class Matrix {
         return result;
     }
 
+ 
+
     int get_cols() {
         return cols;
     }
@@ -119,7 +121,7 @@ class Matrix {
         return rows;
     }
 
-    double get_single_value() {
+    double get_single_value() const {
         if (data.size() != 1) {
             throw std::invalid_argument("Not a 1x1 matrix");
         }
