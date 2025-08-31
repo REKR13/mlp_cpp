@@ -32,7 +32,5 @@ obj/
 *.dSYM/
 *.pdb
 
-# LSP cache files
-.clangd/
-.cache/
-compile_commands.json
+# LSP files
+.clangd
