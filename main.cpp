@@ -5,10 +5,11 @@
 #include "mlp.h"
 
 int main() {
-    
+
     ///*
     std::vector<Matrix> inputs;
     std::vector<Matrix> targets;
+
 
     for (int i = 1; i <= 100; i++) {
         inputs.push_back(Matrix(1, 1, i));          // Inputs from 1 to 100
