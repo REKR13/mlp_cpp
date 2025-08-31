@@ -1,4 +1,4 @@
-#include "matrix_new.h"
+#include "matrix.h"
 
 Matrix::Matrix() : rows(0), cols(0), data(0) {}
 

@@ -1,0 +1,11 @@
+CompileFlags:
+  Add: 
+    - -std=c++17
+    - -Wall
+    - -Wextra
+    - -I.
+  Compiler: clang++
+
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict

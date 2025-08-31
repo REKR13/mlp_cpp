@@ -5,72 +5,52 @@
 #include "mlp.h"
 
 int main() {
-    // Define the XOR data
     std::vector<Matrix> inputs = {
-        Matrix{2, 1, 0},  // (0, 0)
-        Matrix{2, 1, 1}.array_set({0,1}),  // (0, 1)
-        Matrix{2, 1, 1}.array_set({1,0}),  // (1, 0)
-        Matrix{2, 1, 1}   // (1, 1)
+        Matrix(2, 1).array_set({0, 0}),  // (0, 0)
+        Matrix(2, 1).array_set({0, 1}),  // (0, 1)  
+        Matrix(2, 1).array_set({1, 0}),  // (1, 0)
+        Matrix(2, 1).array_set({1, 1})   // (1, 1)
     };
 
     std::vector<Matrix> targets = {
-        Matrix{2, 1, 0},  // output for (0, 0)
-        Matrix{2, 1, 1}.array_set({0,1}),  // output for (0, 1)
-        Matrix{2, 1, 1}.array_set({1,0}),  // output for (1, 0)
-        Matrix{2, 1, 1}   // output for (1, 1)
+        Matrix(1, 1, 0),  // XOR(0, 0) = 0
+        Matrix(1, 1, 1),  // XOR(0, 1) = 1
+        Matrix(1, 1, 1),  // XOR(1, 0) = 1
+        Matrix(1, 1, 0)   // XOR(1, 1) = 0
     };
 
-    // Define your network architecture
-    std::vector<int> layer_sizes = {2, 4, 1};  // 2 inputs, 1 output, hidden layer with 4 neurons
-    std::vector<std::string> activations = {"relu", "sigmoid"};  // Use ReLU for hidden layer, Sigmoid for output layer
+    std::vector<int> layer_sizes = {2, 6, 1};
+    std::vector<std::string> activations = {"sigmoid", "sigmoid"};
+    
+    std::unique_ptr<Loss> mse = std::make_unique<MeanSquaredError>();
+    double learning_rate = 1.0;
+    int epochs = 15000;
+    
+    MLP mlp(layer_sizes, std::move(mse), learning_rate, activations);
 
-    std::unique_ptr<Loss> mse = std::make_unique<MeanSquaredError>();  // Mean Squared Error loss
-
-    int epochs = 10000;
-    double learning_rate = 0.01;
-
-    MLP mlp(layer_sizes, std::move(mse), learning_rate);
-
-    std::cout << "Made it to training loop" << "\n";
-
-    // Training loop
+    std::cout << "Training XOR neural network..." << std::endl;
+    
     for (int epoch = 0; epoch < epochs; epoch++) {
         double total_loss = 0.0;
-        // Training over the XOR data
+        
         for (size_t i = 0; i < inputs.size(); i++) {
-            const Matrix& input = inputs[i];
-            const Matrix& target = targets[i];
-
-            mlp.set_target(target);
-
-            Matrix output = mlp.forward(input);
-            std::cout << "Made it to loss" << "\n";
-            output.shape();
-            target.shape();
-            double loss = mlp.compute_loss(output, target);
+            mlp.set_target(targets[i]);
+            Matrix output = mlp.forward(inputs[i]);
+            double loss = mlp.compute_loss(output, targets[i]);
             total_loss += loss;
-
-            std::cout << "Made it to backward with loss of " << loss << "\n";
             mlp.backward();
         }
-
-        // Print loss every 1000 epochs
+        
         if (epoch % 1000 == 0) {
-            std::cout << "Epoch: " << epoch << ", Loss: " << total_loss / inputs.size() << "\n";
+            std::cout << "Epoch: " << epoch << ", Loss: " << total_loss / inputs.size() << std::endl;
         }
     }
 
-    // Test the model after training
-    std::cout<< "Testing model: " << "\n";
+    std::cout << "\nTesting XOR network:" << std::endl;
     for (size_t i = 0; i < inputs.size(); i++) {
-        const Matrix& input = inputs[i];
-        Matrix output = mlp.predict(input);
-        std::cout << "Input: " << "\n";
-        input.print();
-        std::cout << "Predicted: " << "\n";
-        output.print();
-        std::cout << "Target: " << "\n";
-        targets[i].print();
+        Matrix output = mlp.predict(inputs[i]);
+        std::cout << "Input: (" << inputs[i](0,0) << ", " << inputs[i](1,0) 
+                  << ") -> Output: " << output(0,0) << " (Target: " << targets[i](0,0) << ")" << std::endl;
     }
 
     return 0;

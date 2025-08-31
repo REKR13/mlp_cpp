@@ -1,0 +1,38 @@
+# Compiled Object files
+*.o
+*.obj
+
+# Executables
+*.exe
+*.out
+xor_demo
+main
+
+# Compiler-generated files
+*.d
+*.tmp
+
+# IDE files
+.vscode/
+.vs/
+*.vcxproj*
+*.sln
+*.suo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Build directories
+build/
+bin/
+obj/
+
+# Debug files
+*.dSYM/
+*.pdb
+
+# LSP cache files
+.clangd/
+.cache/
+compile_commands.json

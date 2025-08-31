@@ -1,4 +1,4 @@
-#include "loss_new.h"
+#include "loss.h"
 
 double MeanSquaredError::compute(const Matrix& predicted, const Matrix& target) const {
     Matrix e = predicted - target;

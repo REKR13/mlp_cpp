@@ -6,8 +6,8 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 all: xor_demo
 
-xor_demo: $(OBJECTS) xor_fixed.cpp
-	$(CXX) $(CXXFLAGS) -o xor_demo xor_fixed.cpp $(OBJECTS)
+xor_demo: $(OBJECTS) xor.cpp
+	$(CXX) $(CXXFLAGS) -o xor_demo xor.cpp $(OBJECTS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@

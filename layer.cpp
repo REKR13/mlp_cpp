@@ -1,4 +1,5 @@
-#include "layer_new.h"
+#include "layer.h"
+#include "activation.h"
 
 Layer::Layer(int input_size, int output_size)
     : activation(Activation::NONE), input_size(input_size), output_size(output_size) {

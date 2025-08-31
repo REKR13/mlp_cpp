@@ -1,4 +1,4 @@
-#include "mlp_new.h"
+#include "mlp.h"
 
 MLP::MLP(const std::vector<int>& layer_sizes, 
          std::unique_ptr<Loss> loss_function, 
