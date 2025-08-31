@@ -6,6 +6,7 @@
 *.exe
 *.out
 xor_demo
+mnist_demo
 main
 
 # Compiler-generated files
@@ -34,3 +35,8 @@ obj/
 
 # LSP files
 .clangd
+
+# MNIST data files
+*-ubyte
+*.gz
+data/

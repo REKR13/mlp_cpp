@@ -43,9 +43,19 @@ void Matrix::shape() const {
 
 Matrix Matrix::T() const {
     Matrix result(cols, rows);
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            result(j,i) = (*this)(i,j);
+
+    const int blockSize = 32; // cache size assumption
+
+    for (int i0 = 0; i0 < rows; i0 += blockSize) {
+        for (int j0 = 0; j0 < cols; j0 += blockSize) {
+            int iMax = std::min(i0 + blockSize, rows);
+            int jMax = std::min(j0 + blockSize, cols);
+
+            for (int i = i0; i < iMax; i++) {
+                for (int j = j0; j < jMax; j++) {
+                    result(j, i) = (*this)(i, j);
+                }
+            }
         }
     }
     return result;
@@ -74,10 +84,23 @@ Matrix Matrix::matmul(const Matrix& other) const {
     }
     Matrix result(rows, other.cols);
 
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < other.cols; j++) {
-            for (int k = 0; k < cols; k++) {
-                result(i,j) += (*this)(i,k) * other(k,j);
+    const int blockSize = 64 / sizeof(double); // tune based on cache line size (assume doubles)
+
+    for (int i0 = 0; i0 < rows; i0 += blockSize) {
+        for (int j0 = 0; j0 < other.cols; j0 += blockSize) {
+            for (int k0 = 0; k0 < cols; k0 += blockSize) {
+                int iMax = std::min(i0 + blockSize, rows);
+                int jMax = std::min(j0 + blockSize, other.cols);
+                int kMax = std::min(k0 + blockSize, cols);
+
+                for (int i = i0; i < iMax; i++) {
+                    for (int k = k0; k < kMax; k++) {
+                        double aik = (*this)(i, k);
+                        for (int j = j0; j < jMax; j++) {
+                            result(i, j) += aik * other(k, j);
+                        }
+                    }
+                }
             }
         }
     }

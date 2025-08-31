@@ -1,29 +1,30 @@
 #include <iostream>
 #include <vector>
+#include "loss.h"
 #include "matrix.h"
-#include "layer.h"
 #include "mlp.h"
 
 int main() {
     std::vector<Matrix> inputs = {
         Matrix(2, 1).array_set({0, 0}),  // (0, 0)
-        Matrix(2, 1).array_set({0, 1}),  // (0, 1)  
+        Matrix(2, 1).array_set({0, 1}),  // (0, 1)
         Matrix(2, 1).array_set({1, 0}),  // (1, 0)
-        Matrix(2, 1).array_set({1, 1})   // (1, 1)
+        Matrix(2, 1).array_set({1, 1})  // (1, 1)
     };
 
     std::vector<Matrix> targets = {
         Matrix(1, 1, 0),  // XOR(0, 0) = 0
         Matrix(1, 1, 1),  // XOR(0, 1) = 1
         Matrix(1, 1, 1),  // XOR(1, 0) = 1
-        Matrix(1, 1, 0)   // XOR(1, 1) = 0
+        Matrix(1, 1, 0)  // XOR(1, 1) = 0
     };
 
     std::vector<int> layer_sizes = {2, 6, 1};
-    std::vector<std::string> activations = {"sigmoid", "sigmoid"};
+
+    std::vector<std::string> activations = {"relu","sigmoid"};
     
-    std::unique_ptr<Loss> mse = std::make_unique<MeanSquaredError>();
-    double learning_rate = 1.0;
+    std::unique_ptr<Loss> mse(new MeanSquaredError());
+    double learning_rate = 0.1;
     int epochs = 15000;
     
     MLP mlp(layer_sizes, std::move(mse), learning_rate, activations);

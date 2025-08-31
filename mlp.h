@@ -22,8 +22,8 @@ private:
 public:
     explicit MLP(const std::vector<int>& layer_sizes, 
                  std::unique_ptr<Loss> loss_function, 
-                 double lr = 0.01,
-                 const std::vector<std::string>& activations = {});
+                 double lr,
+                 const std::vector<std::string>& activations);
     
     Matrix predict(const Matrix& input);
     Matrix forward(const Matrix& input);
