@@ -121,25 +121,6 @@ Implements individual neural network layers with configurable activation functio
 ### MLP Class
 Orchestrates the complete neural network with automatic backpropagation and support for different loss functions.
 
-## Mathematical Foundation
-
-**Forward Propagation:**
-```
-z = Wx + b
-a = activation(z)
-```
-
-**Backpropagation:**
-```
-∂L/∂W = ∂L/∂a × ∂a/∂z × ∂z/∂W
-W := W - α∇W
-```
-
-## Requirements
-
-- C++17 compatible compiler
-- Standard library only (no external dependencies)
-
 ## Performance
 
 - **XOR Problem**: Converges with loss < 0.0001 in ~15,000 epochs
