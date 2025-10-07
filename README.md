@@ -9,7 +9,6 @@ A from-scratch implementation of a Multi-Layer Perceptron neural network in C++.
 - **Multiple Activations**: ReLU, Sigmoid, and linear activation functions
 - **Loss Functions**: Mean Squared Error and Binary Cross Entropy
 - **He Weight Initialization**: Proper weight initialization for stable training
-- **Clean C++ Design**: Separated headers and implementation files
 
 ## Functionality
 
